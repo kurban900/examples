@@ -12,7 +12,7 @@ class CreateRowsTable extends Migration
         Schema::create('rows', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->timestamp('date');
+            $table->date('date');
         });
     }
 
