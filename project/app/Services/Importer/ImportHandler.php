@@ -10,13 +10,11 @@ class ImportHandler
 {
     public function handle(Import $import): void
     {
-        $insertedData = [];
-        foreach ($import->getAllData() as $row) {
-            $insertedData[] = [
-                'name' => $row[1],
-                'date' => $this->convertExcelToDateTime($row[2]),
-            ];
-        }
+        $insertedData = array_map(fn($row) => [
+            'name' => $row[1],
+            'date' => $this->convertExcelToDateTime($row[2]),
+        ], $import->getAllData());
+
         $import->insertToDb($insertedData);
         $import->addImportedTotalRows(count($insertedData));
 
