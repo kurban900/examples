@@ -16,10 +16,11 @@ services:
         volumes: 
             - ./project:/app
         depends_on:
+            - rabbitmq
             - storage
             - db
             - redis
-
+    
     php-cli:
         build:
             context: project/docker/dev/php-cli
@@ -27,6 +28,7 @@ services:
             - ./project:/app
             - composer:/root/.composer/cache
         depends_on:
+            - rabbitmq
             - storage
             - db
             - redis
@@ -39,6 +41,19 @@ services:
             - ./storage:/app
         ports:
             - "8081:80"
+    
+    queue:
+        build:
+            context: project/docker/dev/php-cli
+        volumes:
+            - ./project:/app
+        depends_on:
+            - rabbitmq
+            - db
+            - redis
+        tty: true
+        restart: always
+        command: php artisan queue:work --sleep=5
         
     db:
         image: mariadb
@@ -68,15 +83,13 @@ services:
             
     rabbitmq:
         image: rabbitmq:3.6.14-management
-        environment:
-            RABBITMQ_DEFAULT_USER: guest
-            RABBITMQ_DEFAULT_PASSWORD: guest
         ports:
-            - 15671:15671
             - 15672:15672
-            - 5671:5671
             - 5672:5672
+        volumes: 
+            - 'rabbitmq_data:/data'
 volumes:
+    rabbitmq_data:
     redis:
     db:
     composer:
