@@ -16,7 +16,6 @@ class ImportHandler
         ], $import->getAllData());
 
         $import->insertToDb($insertedData);
-        $import->addImportedTotalRows(count($insertedData));
 
         if ($import->isCompleted()) {
             event(new ImportCompleted());

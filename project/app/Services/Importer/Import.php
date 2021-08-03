@@ -62,6 +62,7 @@ class Import
     public function insertToDb(array $data): void
     {
         $this->model->insert($data);
+        $this->addImportedTotalRows(count($data));
     }
 
     public function getUploadedFile(): File
